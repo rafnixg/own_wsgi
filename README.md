@@ -15,53 +15,6 @@ A WSGI server consists of two main parts:
 
 2. WSGI Application: The WSGI application is a Python callable that takes two arguments: `environ` and `start_response`. The `environ` argument is a dictionary containing the HTTP request information, and the `start_response` argument is a callable that is used to send the HTTP response headers.
 
-## Creating a Simple WSGI Server
-
-Here is an example of a simple WSGI server that listens on port 8000 and responds with a "Hello, World!" message:
-
-```python
-
-import socket
-
-def application(environ, start_response):
-    status = '200 OK'
-    headers = [('Content-type', 'text/plain')]
-    start_response(status, headers)
-    return [b'Hello, World!']
-
-def run_server():
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(('localhost', 8000))
-    server_socket.listen(1)
-
-    while True:
-        client_socket, addr = server_socket.accept()
-        data = client_socket.recv(1024)
-        environ = {
-            'REQUEST_METHOD': 'GET',
-            'PATH_INFO': '/',
-            'SERVER_PROTOCOL': 'HTTP/1.1',
-            'wsgi.input': data
-        }
-        response = application(environ, start_response)
-        client_socket.sendall(b'HTTP/1.1 200 OK\r\n')
-        client_socket.sendall(b'Content-Type: text/plain\r\n\r\n')
-        client_socket.sendall(b'Hello, World!')
-        client_socket.close()
-
-if __name__ == '__main__':
-    run_server()
-
-```
-
-To run the server, save the code to a file named `server.py` and run it using the following command:
-
-```bash
-python server.py
-```
-
-The server will start listening on port 8000. You can test the server by opening a web browser and navigating to `http://localhost:8000`. You should see a "Hello, World!" message displayed in the browser.
-
 
 ## Own WSGI Server
 
