@@ -1,23 +1,26 @@
+"""A module for the WSGI application class."""
+
 from typing import Callable
 from dataclasses import dataclass
 from .request import Request
-from .response import PlainTextResponse, BaseResponse
+from .response import PlainTextResponse, BaseResponse, JSONResponse
+
 
 @dataclass(frozen=True, eq=True)
 class PathOperation:
     """A class representing a path operation."""
+
     path: str
     http_method: str
 
 
 class WSGIApplication:
     """A class representing a WSGI application."""
+
     def __init__(self):
         self.path_operations = dict()
 
-    def _register_path_operation(
-        self, path: str, http_method: str, func: Callable
-    ):
+    def _register_path_operation(self, path: str, http_method: str, func: Callable):
         po = PathOperation(path, http_method)
         self.path_operations[po] = func
 
@@ -46,6 +49,8 @@ class WSGIApplication:
             ret = func(request=request)
             if isinstance(ret, BaseResponse):
                 response = ret
+            if isinstance(ret, dict):
+                response = JSONResponse(body=ret)
             else:
                 response = PlainTextResponse(body=ret)
         start_response(response.status, response.headers)

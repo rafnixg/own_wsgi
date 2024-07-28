@@ -1,4 +1,4 @@
-"""WSGI"""
+"""A module for WSGI request and response classes."""
 
 from dataclasses import dataclass, field
 from typing import List, Tuple

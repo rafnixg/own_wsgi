@@ -1,8 +1,21 @@
-"""Log module."""
+"""Log Middleware."""
 
 import datetime
 
 from .wsgi import WSGIRequest, WSGIResponse
+
+
+def log_output(func):
+    """Log the request and response."""
+
+    def wrapper(*args, **kwargs):
+        client_address = args[0].client_address
+        request = args[0].request
+        response = args[0].response
+        log_request(client_address, request, response)
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 def log_request(client_address, request: WSGIRequest, response: WSGIResponse):

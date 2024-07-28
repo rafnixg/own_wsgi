@@ -1,4 +1,4 @@
-"""A simple HTTP server."""
+"""A simple WSGI application example."""
 
 from wsgi.server import WSGIServer
 from wsgi.application import WSGIApplication
@@ -7,6 +7,8 @@ from wsgi.application.response import PlainTextResponse, HTMLResponse, JSONRespo
 
 # Create a WSGI application
 app = WSGIApplication()
+
+# Register path operations
 
 @app.get("/")
 def index(request: Request) -> PlainTextResponse:
@@ -28,7 +30,6 @@ def echo(request: Request) -> PlainTextResponse:
     """Echo page."""
     return PlainTextResponse(body=request.body.decode("utf-8"))
 
-# Set the application
 
 if __name__ == "__main__":
     # Create a server

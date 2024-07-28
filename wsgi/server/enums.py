@@ -1,4 +1,4 @@
-"""HTTP Enums module."""
+"""This module contains the enums used in the server module."""
 
 from enum import StrEnum, Enum
 

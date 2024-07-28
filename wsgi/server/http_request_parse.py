@@ -1,4 +1,4 @@
-"""This module contains the HTTP-related enums."""
+"""A module for parsing HTTP requests."""
 
 from .splitbuffer import SplitBuffer
 

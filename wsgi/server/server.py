@@ -1,4 +1,4 @@
-"""Server package."""
+"""A module containing the WSGI server implementation."""
 
 import socket
 import threading

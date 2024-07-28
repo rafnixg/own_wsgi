@@ -1,4 +1,4 @@
-"""Constants for the server."""
+"""This module contains constants for the server."""
 
 HOST = "localhost"
 PORT = 4221

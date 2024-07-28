@@ -1,4 +1,4 @@
-"""HTTP response module."""
+"""Create a HTTP response."""
 
 from typing import List, Tuple
 
