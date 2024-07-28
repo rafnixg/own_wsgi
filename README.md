@@ -63,3 +63,65 @@ python server.py
 The server will start listening on port 8000. You can test the server by opening a web browser and navigating to `http://localhost:8000`. You should see a "Hello, World!" message displayed in the browser.
 
 
+## Own WSGI Server
+
+### Using Own WSGI Application Framework
+
+how to use the server module with the application module to create a simple WSGI server that responds with different types of content based on the request URL.
+
+```python
+"""A simple HTTP server."""
+
+from wsgi.server import WSGIServer
+from wsgi.application import WSGIApplication
+from wsgi.application.request import Request
+from wsgi.application.response import PlainTextResponse, HTMLResponse, JSONResponse
+
+# Create a WSGI application
+app = WSGIApplication()
+
+# Define a simple WSGI application
+@app.route('/')
+def hello(request):
+    return PlainTextResponse(body='Hello, World!')
+
+@app.route('/html')
+def html(request):
+    return HTMLResponse(body='<h1>Hello, World!</h1>')
+
+@app.route('/json')
+def json(request):
+    return JSONResponse(body={'message': 'Hello, World!'})
+
+# Create a WSGI server
+server = WSGIServer(host='localhost', port=8000, app)
+
+# Start the server
+server.serve_forever()
+```
+
+To run the server, save the code to a file named `app.py` and run it using the following command:
+
+```bash
+python app.py
+```
+
+The server will start listening on port 8000. You can test the server by opening a web browser and navigating to `http://localhost:8000`, `http://localhost:8000/html`, or `http://localhost:8000/json`. You should see different types of content displayed in the browser.
+
+### Using FastAPI
+
+```python
+
+from fastapi import FastAPI
+from wsig.server import WSGIServer
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+
+server = WSGIServer(app=app, host='localhost', port=8000)
+server.serve_forever()
+
+```
