@@ -15,7 +15,7 @@ class WSGIServer:
     """A class representing a WSGI server."""
 
     def __init__(
-        self, host: str = "localhost", port: int = 4221, app: callable = None
+        self, host: str = "localhost", port: int = 8080, app: callable = None
     ) -> None:
         self.host = host
         self.port = port
