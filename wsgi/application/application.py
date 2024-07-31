@@ -6,7 +6,7 @@ from typing import Callable
 from dataclasses import dataclass
 from .request import Request
 from .response import PlainTextResponse, BaseResponse, JSONResponse
-
+from .template import Template
 
 @dataclass(frozen=True, eq=True)
 class PathOperation:
@@ -19,11 +19,12 @@ class PathOperation:
 class WSGIApplication:
     """A class representing a WSGI application."""
 
-    def __init__(self, middleware: list[callable] = None):
+    def __init__(self, middleware: list[callable] = None, template_engine: object = None):
         self.path_operations = dict()
         self.app_dir = self._get_app_dir()
-        self.template_dir = f"{self.app_dir}/templates"
+        # self.template_dir = f"{self.app_dir}/templates"
         self.middleware = middleware
+        self.template_engine = template_engine if template_engine is not None else Template
 
     def _get_app_dir(self):
         return sys.path[0]
