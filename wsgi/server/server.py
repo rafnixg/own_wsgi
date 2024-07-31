@@ -55,6 +55,15 @@ class WSGIServer:
                 print("Server is shutting down.")
                 server_socket.close()
                 break
+            except Exception as e:
+                print(f"An error occurred: {e}")
+                server_socket.close()
+                break
+        # Close the server socket
+        server_socket.close()
+        # Print the server shutdown message
+        print("Server has been shutdown.")
+        sys.exit(0)  # Exit the program
 
 
 class Session:
