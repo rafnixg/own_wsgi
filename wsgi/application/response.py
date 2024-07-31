@@ -39,8 +39,15 @@ class BaseResponse:
 class PlainTextResponse(BaseResponse):
     """A plain text response class for the application."""
 
-    content_type = "plain/text"
-
+    def __init__(
+        self,
+        status: str = "200 OK",
+        headers: Optional[List[Tuple[str, str]]] = None,
+        body: Optional[Any] = None,
+    ):
+        self.content_type = "text/plain"
+        super().__init__(status, headers, body)
+    
     @classmethod
     def body_conversion(cls, body):
         return body.encode("utf-8")
@@ -49,7 +56,14 @@ class PlainTextResponse(BaseResponse):
 class HTMLResponse(BaseResponse):
     """An HTML response class for the application."""
 
-    content_type = "plain/html"
+    def __init__(
+        self,
+        status: str = "200 OK",
+        headers: Optional[List[Tuple[str, str]]] = None,
+        body: Optional[Any] = None,
+    ):
+        self.content_type = "text/html"
+        super().__init__(status, headers, body)
 
     @classmethod
     def body_conversion(cls, body):
@@ -59,7 +73,14 @@ class HTMLResponse(BaseResponse):
 class JSONResponse(BaseResponse):
     """A JSON response class for the application."""
 
-    content_type = "application/json"
+    def __init__(
+        self,
+        status: str = "200 OK",
+        headers: Optional[List[Tuple[str, str]]] = None,
+        body: Optional[Any] = None,
+    ):
+        self.content_type = "application/json"
+        super().__init__(status, headers, body)
 
     @classmethod
     def body_conversion(cls, body):
@@ -69,7 +90,6 @@ class JSONResponse(BaseResponse):
 class TemplateResponse(HTMLResponse):
     """A template response class for the application."""
 
-    content_type = "plain/html"
 
     def __init__(
         self,
@@ -81,6 +101,7 @@ class TemplateResponse(HTMLResponse):
     ):
         self.template = template
         self.context = context if context is not None else {}
+        self.content_type = "text/html"
         super().__init__(status, headers, body)
 
     def render_template(self):

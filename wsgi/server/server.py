@@ -88,12 +88,12 @@ class Session:
 
     def on_header(self, name: bytes, value: bytes):
         """Handle the header callback."""
-        print(f"Received header: ({name}, {value})")
+        # print(f"Received header: ({name}, {value})")
         self.request.headers.append((name.decode("utf-8"), value.decode("utf-8")))
 
     def on_body(self, body: bytes):
         """Handle the body callback."""
-        print(f"Received body: {body}")
+        # print(f"Received body: {body}")
         self.request.body.write(body)
         self.request.body.seek(0)
 
@@ -102,7 +102,7 @@ class Session:
         print("Received request completely.")
         environ = self.request.to_environ()
         body_chunks = self.app(environ, self.response.start_response)
-        print("App callable has returned.")
+        # print("App callable has returned.")
         self.response.body = b"".join(body_chunks)
         self.client_socket.send(self.response.to_http())
         log_request(self.client_address, self.request, self.response)

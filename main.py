@@ -9,9 +9,14 @@ from wsgi.application.response import (
     JSONResponse,
     TemplateResponse,
 )
+from wsgi.application.middleware import TimingMiddleware
 
 # Create a WSGI application
-app = WSGIApplication()
+app = WSGIApplication(
+    middleware=[
+        TimingMiddleware,
+    ]
+)
 
 # Register path operations
 

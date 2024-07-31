@@ -19,10 +19,11 @@ class PathOperation:
 class WSGIApplication:
     """A class representing a WSGI application."""
 
-    def __init__(self):
+    def __init__(self, middleware: list[callable] = None):
         self.path_operations = dict()
         self.app_dir = self._get_app_dir()
         self.template_dir = f"{self.app_dir}/templates"
+        self.middleware = middleware
 
     def _get_app_dir(self):
         return sys.path[0]
@@ -55,22 +56,31 @@ class WSGIApplication:
         return self._create_register_decorator(path, "DELETE")
 
     def _get_path_operation(self, path: str, http_method: str):
-        path = path.rstrip("/")
+        path = path.rstrip("/") if path != "/" else path
         po = PathOperation(path, http_method)
         return self.path_operations.get(po)
+
+    def _get_not_found(self):
+        return PlainTextResponse(status="404 NOT FOUND", body="Not Found")
 
     def __call__(self, environ, start_response):
         func = self._get_path_operation(environ["PATH_INFO"], environ["REQUEST_METHOD"])
         if func is None:
-            response = PlainTextResponse(status="404 NOT FOUND")
+            response = self._get_not_found()
         else:
+            func = self.apply_middleware(func)
             request = Request.from_environ(environ)
-            ret = func(request=request)
-            if isinstance(ret, BaseResponse):
-                response = ret
-            elif isinstance(ret, dict):
-                response = JSONResponse(body=ret)
-            else:
-                response = PlainTextResponse(body=ret)
+            response = func(request=request)
+            if isinstance(response, dict):
+                response = JSONResponse(body=response)
+            elif not isinstance(response, BaseResponse):
+                response = PlainTextResponse(body=response)
         start_response(response.status, response.headers)
         return [response.body]
+
+    def apply_middleware(self, func):
+        """Apply middleware to the function."""
+        if self.middleware is not None:
+            for middleware in self.middleware:
+                func = middleware(func)
+        return func
