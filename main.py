@@ -1,5 +1,6 @@
 """A simple WSGI application example."""
 
+from wsgi.application.template import Template
 from wsgi.server import WSGIServer
 from wsgi.application import WSGIApplication
 from wsgi.application.request import Request
@@ -9,12 +10,12 @@ from wsgi.application.response import (
     JSONResponse,
     TemplateResponse,
 )
-from wsgi.application.middleware import TimingMiddleware
+from wsgi.application.middleware import timing_middleware
 
 # Create a WSGI application
 app = WSGIApplication(
     middleware=[
-        TimingMiddleware,
+        timing_middleware,
     ]
 )
 
@@ -46,7 +47,7 @@ def echo(request: Request) -> PlainTextResponse:
 
 
 @app.get("/template")
-def template(request: Request) -> TemplateResponse:
+def template(request: Request) -> HTMLResponse:
     """Template page."""
     template_path = (
         "index.html"
@@ -54,6 +55,12 @@ def template(request: Request) -> TemplateResponse:
         else request.query.get("name") + ".html"
     )
     context = {"message": "Hello, World! from context"}
+    # This is a simple way to render a template, is like a jinja2 template engine.
+    # In a real-world application, you should use a template engine.
+    render_template = Template(template_path).render(**context)
+    if not render_template:
+        return HTMLResponse(status="404 NOT FOUND", body="Not Found")
+
     return TemplateResponse(template=template_path, context=context)
 
 
