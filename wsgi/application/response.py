@@ -4,7 +4,7 @@ import json
 
 from typing import List, Tuple, Optional, Any
 
-from wsgi.application.template import TemplateParser
+from wsgi.application.template import Template
 
 
 class BaseResponse:
@@ -110,12 +110,12 @@ class TemplateResponse(HTMLResponse):
 
     def render_template(self):
         """Render the template."""
-        template_parser = TemplateParser(self.template, self.context)
-        parse_template = template_parser.parse()
-        if not parse_template:
+        template = Template(self.template)
+        render_template = template.render(**self.context)
+        if not render_template:
             self.status = "404 NOT FOUND"
             return f"Template not found: {self.template}"
-        return parse_template
+        return render_template
 
     def add_content_type_and_content_length(self):
         """Add the Content-Type and Content-Length headers."""
