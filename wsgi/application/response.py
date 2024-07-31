@@ -1,7 +1,10 @@
 """Response classes for the application."""
 
 import json
+
 from typing import List, Tuple, Optional, Any
+
+from wsgi.application.template import TemplateParser
 
 
 class BaseResponse:
@@ -61,3 +64,35 @@ class JSONResponse(BaseResponse):
     @classmethod
     def body_conversion(cls, body):
         return json.dumps(body).encode("utf-8")
+
+
+class TemplateResponse(HTMLResponse):
+    """A template response class for the application."""
+
+    content_type = "plain/html"
+
+    def __init__(
+        self,
+        status: str = "200 OK",
+        headers: Optional[List[Tuple[str, str]]] = None,
+        body: Optional[Any] = None,
+        template: str = "",
+        context: Optional[dict] = None,
+    ):
+        self.template = template
+        self.context = context if context is not None else {}
+        super().__init__(status, headers, body)
+
+    def render_template(self):
+        """Render the template."""
+        template_parser = TemplateParser(self.template, self.context)
+        parse_template = template_parser.parse()
+        if not parse_template:
+            self.status = "404 NOT FOUND"
+            return f"Template not found: {self.template}"
+        return parse_template
+
+    def add_content_type_and_content_length(self):
+        """Add the Content-Type and Content-Length headers."""
+        self.body = self.render_template().encode("utf-8")
+        super().add_content_type_and_content_length()

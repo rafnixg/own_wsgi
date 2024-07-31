@@ -2,8 +2,6 @@
 
 import argparse
 
-from .constant import HOST, PORT
-
 
 def get_directory_path():
     """Get the directory path from the command line arguments.
@@ -20,15 +18,17 @@ def get_directory_path():
     return args.directory
 
 
-def print_welcome_message():
+def print_welcome_message(app, host, port):
     """Print the welcome message."""
-    print("Welcome to the HTTP server!")
-    print(f"Listening on {HOST}:{PORT}...")
+    print("Welcome the Simple WSGI Server!")
+    print(f"Listening on {host}:{port}...\n")
     print("Press Ctrl+C to quit.\n")
-    print("HTTP Compression is enabled: gzip\n")
+    if app:
+        print_avaliabe_endpoints(app)
+
+
+def print_avaliabe_endpoints(app):
+    """Print the available endpoints."""
     print("Available endpoints:")
-    print("GET /")
-    print("GET /echo/<message>")
-    print("GET /user-agent")
-    print("GET /files/<filename>")
-    print("POST /files/<filename>")
+    for path_operation in app.path_operations:
+        print(f"[{path_operation.http_method}] {path_operation.path}")

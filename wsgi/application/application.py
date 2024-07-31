@@ -1,5 +1,7 @@
 """A module for the WSGI application class."""
 
+import sys
+
 from typing import Callable
 from dataclasses import dataclass
 from .request import Request
@@ -19,6 +21,11 @@ class WSGIApplication:
 
     def __init__(self):
         self.path_operations = dict()
+        self.app_dir = self._get_app_dir()
+        self.template_dir = f"{self.app_dir}/templates"
+
+    def _get_app_dir(self):
+        return sys.path[0]
 
     def _register_path_operation(self, path: str, http_method: str, func: Callable):
         po = PathOperation(path, http_method)
@@ -39,9 +46,21 @@ class WSGIApplication:
         """Register a POST handler."""
         return self._create_register_decorator(path, "POST")
 
+    def put(self, path: str):
+        """Register a PUT handler."""
+        return self._create_register_decorator(path, "PUT")
+
+    def delete(self, path: str):
+        """Register a DELETE handler."""
+        return self._create_register_decorator(path, "DELETE")
+
+    def _get_path_operation(self, path: str, http_method: str):
+        path = path.rstrip("/")
+        po = PathOperation(path, http_method)
+        return self.path_operations.get(po)
+
     def __call__(self, environ, start_response):
-        po = PathOperation(environ["PATH_INFO"], environ["REQUEST_METHOD"])
-        func = self.path_operations.get(po)
+        func = self._get_path_operation(environ["PATH_INFO"], environ["REQUEST_METHOD"])
         if func is None:
             response = PlainTextResponse(status="404 NOT FOUND")
         else:
@@ -49,7 +68,7 @@ class WSGIApplication:
             ret = func(request=request)
             if isinstance(ret, BaseResponse):
                 response = ret
-            if isinstance(ret, dict):
+            elif isinstance(ret, dict):
                 response = JSONResponse(body=ret)
             else:
                 response = PlainTextResponse(body=ret)

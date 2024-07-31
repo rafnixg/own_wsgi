@@ -2,6 +2,7 @@
 
 import socket
 import threading
+import sys
 
 from .constant import BUFFER_ZISE
 from .wsgi import WSGIResponse, WSGIRequest
@@ -20,26 +21,40 @@ class WSGIServer:
         self.port = port
         self.app = app
 
+        if self.app is None:
+            # TODO: run the server statically without an app
+            print("Please provide a WSGI application.")
+            sys.exit(1)
+
     def server_forever(self):
         """Run the server."""
         # Create a TCP server socket
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server_socket.bind((self.host, self.port))
-        server_socket.listen(1)
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # IPv4, TCP
+        server_socket.bind((self.host, self.port))  # Bind the socket to the address
+        server_socket.setsockopt(
+            socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
+        )  # Reuse the address
+        server_socket.listen(1)  # Listen for incoming connections
         # Print the welcome message
-        print_welcome_message()
+        print_welcome_message(self.app, self.host, self.port)
         # Keep the server running forever
         while True:
-            # Accept the connection from TCP client
-            client_socket, client_address = server_socket.accept()
-            # Create a thread to handle the client connection
-            print(f"Socket established with {client_address}.")
-            session = Session(client_socket, client_address, self.app)
-            thread = threading.Thread(
-                target=session.run,
-            )
-            # Start the thread
-            thread.start()
+            try:
+                # Accept the connection from TCP client
+                client_socket, client_address = server_socket.accept()
+                print(f"Socket established with {client_address}.")
+                # Create a session for the client
+                session = Session(client_socket, client_address, self.app)
+                # Create a thread to handle the client connection
+                thread = threading.Thread(
+                    target=session.run,
+                )
+                # Start the thread
+                thread.start()
+            except KeyboardInterrupt:
+                print("Server is shutting down.")
+                server_socket.close()
+                break
 
 
 class Session:
