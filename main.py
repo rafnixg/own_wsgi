@@ -59,6 +59,6 @@ def template(request: Request) -> TemplateResponse:
 
 if __name__ == "__main__":
     # Create a server
-    server = WSGIServer("localhost", 8080, app)
+    server = WSGIServer("localhost", 8081, app)
     # Run the server
     server.server_forever()
