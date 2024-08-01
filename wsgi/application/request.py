@@ -7,6 +7,7 @@ from dataclasses import dataclass
 @dataclass
 class Request:
     """A class representing a request."""
+
     query: Dict[str, str]
     body: bytes
     headers: Dict[str, str]
@@ -17,7 +18,11 @@ class Request:
         query = {}
         if environ["QUERY_STRING"]:
             qs = environ["QUERY_STRING"]
-            query = dict(entry.split("=") for entry in qs.split("&"))
+            query = (
+                dict(entry.split("=") for entry in qs.split("&"))
+                if qs.count("=") > 0
+                else {qs: None}
+            )
         body = environ["wsgi.input"].read()
         headers = {
             k.replace("HTTP_", ""): v
