@@ -7,6 +7,8 @@ from wsgi.application.response import (
     PlainTextResponse,
     HTMLResponse,
     JSONResponse,
+    NotFoundResponse,
+    HTTPErrorResponse,
 )
 from wsgi.application.middleware import timing_middleware
 
@@ -35,6 +37,12 @@ def html(request: Request) -> HTMLResponse:
 @app.get("/json")
 def json(request: Request) -> JSONResponse:
     """JSON page."""
+    if request.query.get("name") is not None:
+        return JSONResponse(body={"message": f"Hello, {request.query.get('name')}!"})
+    if request.query.get("error") is not None:
+        return HTTPErrorResponse(
+            status="500 INTERNAL SERVER ERROR", body="Internal Server Error"
+        )
     return JSONResponse(body={"message": "Hello, World!"})
 
 
@@ -53,11 +61,9 @@ def template(request: Request) -> HTMLResponse:
         else request.query.get("name") + ".html"
     )
     context = {"message": "Hello, World! from context"}
-    # This is a simple way to render a template, is like a jinja2 template engine.
-    # In a real-world application, you should use a template engine.
     render_template = app.template_engine(template_path).render(**context)
     if not render_template:
-        return HTMLResponse(status="404 NOT FOUND", body="Not Found")
+        return NotFoundResponse()
     return HTMLResponse(body=render_template)
 
 

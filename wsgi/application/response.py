@@ -88,3 +88,16 @@ class JSONResponse(BaseResponse):
     def body_conversion(cls, body):
         return json.dumps(body).encode("utf-8")
 
+
+class NotFoundResponse(PlainTextResponse):
+    """A not found response class for the application."""
+
+    def __init__(self):
+        super().__init__(status="404 NOT FOUND", body="Not Found")
+
+
+class HTTPErrorResponse(PlainTextResponse):
+    """A not found response class for the application."""
+
+    def __init__(self, status: str, body: str):
+        super().__init__(status=status, body=body)
