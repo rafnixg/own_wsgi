@@ -18,10 +18,10 @@ def get_directory_path():
     return args.directory
 
 
-def print_welcome_message(app, host, port):
+def print_welcome_message(app):
     """Print the welcome message."""
     print("Welcome the Simple WSGI Server!")
-    print(f"Listening on {host}:{port}...\n")
+    print(f"Listening on {app.host}:{app.port}...\n")
     print("Press Ctrl+C to quit.\n")
     if app:
         print_avaliabe_endpoints(app)
@@ -30,5 +30,5 @@ def print_welcome_message(app, host, port):
 def print_avaliabe_endpoints(app):
     """Print the available endpoints."""
     print("Available endpoints:")
-    for path_operation in app.path_operations:
-        print(f"[{path_operation.http_method}] {path_operation.path}")
+    for route in app.router.routes:
+        print(f"[{route.http_method}] {route.path}")

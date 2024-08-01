@@ -36,7 +36,9 @@ class WSGIServer:
         )  # Reuse the address
         server_socket.listen(1)  # Listen for incoming connections
         # Print the welcome message
-        print_welcome_message(self.app, self.host, self.port)
+        self.app.host = self.host
+        self.app.port = self.port
+        print_welcome_message(self.app)
         # Keep the server running forever
         while True:
             try:
