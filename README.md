@@ -15,6 +15,32 @@ A WSGI server consists of two main parts:
 
 2. WSGI Application: The WSGI application is a Python callable that takes two arguments: `environ` and `start_response`. The `environ` argument is a dictionary containing the HTTP request information, and the `start_response` argument is a callable that is used to send the HTTP response headers.
 
+### Web Server
+
+The web server is responsible for accepting incoming HTTP requests and passing them to the WSGI application. The web server can be implemented using the `socket` module in Python. The web server listens on a specific port for incoming connections and processes the requests.
+
+### WSGI Application
+
+The WSGI application is a Python callable that takes two arguments: `environ` and `start_response`. The `environ` argument is a dictionary containing the HTTP request information, and the `start_response` argument is a callable that is used to send the HTTP response headers.
+
+- `environ`: A dictionary containing the HTTP request information, such as the request method, request URL, and request headers.
+- `start_response`: A callable that takes two arguments: `status` and `headers`. The `status` argument is a string containing the HTTP status code and message, and the `headers` argument is a list of tuples containing the HTTP response headers.
+
+The WSGI application must return an iterable object that contains the response body content. The response body content can be a string, a list of strings, or a file-like object.
+
+### WSGI Application Framework
+
+A WSGI application framework is a library or module that provides utilities and tools for building WSGI applications. It typically includes features such as routing, middleware, request and response objects, and error handling.
+
+Features of a WSGI application framework:
+
+- [x] Routing: The framework provides a way to map URLs to specific functions or handlers.
+- [x] Middleware: The framework allows you to add middleware functions to process requests and responses.
+- [x] Request and Response Objects: The framework provides request and response objects to access the HTTP request and response data.
+- [-] Error Handling: The framework provides a way to handle errors and exceptions in the application.
+- [x] Utilities: The framework provides utilities and tools to simplify common tasks in web development.
+
+
 
 ## Own WSGI Server
 
