@@ -35,9 +35,9 @@ class WSGIServer:
             socket.SOL_SOCKET, socket.SO_REUSEADDR, 1
         )  # Reuse the address
         server_socket.listen(1)  # Listen for incoming connections
-        # Print the welcome message
         self.app.host = self.host
         self.app.port = self.port
+        # Print the welcome message
         print_welcome_message(self.app)
         # Keep the server running forever
         while True:
@@ -92,18 +92,28 @@ class Session:
         print(f"Socket closed with {self.client_address}.")
 
     def on_url(self, url: bytes):
-        """Handle the URL callback."""
+        """Handle the URL callback.
+        Args:
+            url (bytes): The URL.
+        """
         print(f"Received url: {url}")
         self.request.http_method = self.parser.http_method.decode("utf-8")
         self.request.path = url.decode("utf-8")
 
     def on_header(self, name: bytes, value: bytes):
-        """Handle the header callback."""
+        """Handle the header callback.
+        Args:
+            name (bytes): The header name.
+            value (bytes): The header value.
+        """
         # print(f"Received header: ({name}, {value})")
         self.request.headers.append((name.decode("utf-8"), value.decode("utf-8")))
 
     def on_body(self, body: bytes):
-        """Handle the body callback."""
+        """Handle the body callback.
+        Args:
+            body (bytes): The body.
+        """
         # print(f"Received body: {body}")
         self.request.body.write(body)
         self.request.body.seek(0)

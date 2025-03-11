@@ -16,7 +16,10 @@ class HttpRequestParser:
         self.http_version = None
 
     def feed_data(self, data: bytes):
-        """Feed data to the parser."""
+        """Feed data to the parser.
+        Args:
+            data (bytes): The data to parse.
+        """
         self.buffer.feed_data(data)
         self.parse()
 

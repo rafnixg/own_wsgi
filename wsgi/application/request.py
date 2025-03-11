@@ -14,7 +14,12 @@ class Request:
 
     @classmethod
     def from_environ(cls, environ: Dict):
-        """Create a request from a WSGI environ."""
+        """Create a request from a WSGI environ.
+        Args:
+            environ (dict): The WSGI environ.
+        Returns:
+            Request: The request object.
+        """
         query = {}
         if environ["QUERY_STRING"]:
             qs = environ["QUERY_STRING"]

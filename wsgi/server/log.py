@@ -19,7 +19,12 @@ def log_output(func):
 
 
 def log_request(client_address, request: WSGIRequest, response: WSGIResponse):
-    """Print the request in log."""
+    """Print the request in log.
+    Args:
+        client_address (tuple): The client address.
+        request (WSGIRequest): The request object.
+        response (WSGIResponse): The response object.
+    """
     date_time = datetime.datetime.now()
     date_time_format = date_time.strftime("%d/%m/%Y %H:%M:%S")
     print(

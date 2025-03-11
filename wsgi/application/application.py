@@ -34,6 +34,8 @@ class WSGIApplication:
         """Register a GET handler.
         Args:
             path (str): The path.
+        Returns:
+            callable: The decorator.
         """
         return self.router.get(path)
 
@@ -41,6 +43,8 @@ class WSGIApplication:
         """Register a POST handler.
         Args:
             path (str): The path.
+        Returns:
+            callable: The decorator
         """
         return self.router.post(path)
 
@@ -48,6 +52,8 @@ class WSGIApplication:
         """Register a PUT handler.
         Args:
             path (str): The path.
+        Returns:
+            callable: The decorator
         """
         return self.router.put(path)
 
@@ -55,10 +61,19 @@ class WSGIApplication:
         """Register a DELETE handler.
         Args:
             path (str): The path.
+        Returns:
+            callable: The decorator
         """
         return self.router.delete(path)
 
     def __call__(self, environ, start_response):
+        """This is the entry point for the WSGI server.
+        Args:
+            environ (dict): The WSGI environment.
+            start_response (callable): The start response function.
+        Returns:
+            list: The response body.
+        """
         route_handler = self.router.get_route_handler(
             environ["PATH_INFO"], environ["REQUEST_METHOD"]
         )
@@ -76,7 +91,12 @@ class WSGIApplication:
         return [response.body]
 
     def apply_middleware(self, func):
-        """Apply middleware to the function."""
+        """Apply middleware to the function.
+        Args:
+            func: The function.
+        Returns:
+            callable: The wrapped function.
+        """
         if self.middleware is not None:
             for middleware in self.middleware:
                 func = middleware(func)

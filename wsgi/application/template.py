@@ -35,7 +35,13 @@ class Template:
         return os.path.exists(self.template_path) and os.path.isfile(self.template_path)
 
     def render(self, *args,**kwargs) -> str:
-        """Render the template."""
+        """Render the template.
+        Args:
+            *args: The arguments.
+            **kwargs: The keyword arguments.
+        Returns:
+            str: The rendered template.
+        """
         if self.template_body is None:
             return ""
         return self.template_body.format(*args, **kwargs)
