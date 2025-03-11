@@ -1,3 +1,4 @@
+"""A module for the router class."""
 from typing import Callable
 from dataclasses import dataclass
 
@@ -84,24 +85,11 @@ class Router:
         return decorator
 
     def get_route_handler(self, path: str, http_method: str):
-        """Get the path operation."""
+        """Get the path operation. 
+        Args:
+            path (str): The path.
+            http_method (str): The HTTP method.
+        """
         path = path.rstrip("/") if path != "/" else path
         route = Routes(path, http_method)
         return self.routes.get(route)
-
-    # def get_not_found(self):
-    #     return PlainTextResponse(status="404 NOT FOUND", body="Not Found")
-
-    # def __call__(self, environ, start_response):
-    #     func = self.get_path_operation(environ["PATH_INFO"], environ["REQUEST_METHOD"])
-    #     if func is None:
-    #         response = self.get_not_found()
-    #     else:
-    #         request = Request.from_environ(environ)
-    #         response = func(request=request)
-    #         if isinstance(response, dict):
-    #             response = JSONResponse(body=response)
-    #         elif not isinstance(response, BaseResponse):
-    #             response = PlainTextResponse(body=response)
-    #     start_response(response.status, response.headers)
-    #     return [response.body]
