@@ -34,7 +34,9 @@ def index(request: Request) -> PlainTextResponse:
 @app.get("/html")
 def html(request: Request) -> HTMLResponse:
     """HTML page."""
-    return HTMLResponse(body="<h1>Hello, World!</h1>", status="200 OK")
+    routes = [f'<li><a href="{route.path}">{route.path}</a></li>' for route in app.router.routes]
+    routes_html = f'<ul>{"".join(routes)}</ul>'
+    return HTMLResponse(body=f"<h1>Hello, World!</h1>{routes_html}", status="200 OK")
 
 
 @app.get("/json")
