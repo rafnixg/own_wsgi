@@ -1,0 +1,8 @@
+.vscode
+own_wsgi
+venv
+routes.py
+__pycache__
+*.pyc
+*.pyo
+*.pyd
