@@ -1,6 +1,7 @@
 """Log Middleware."""
 
 import datetime
+import logging
 
 from .wsgi import WSGIRequest, WSGIResponse
 
@@ -18,6 +19,20 @@ def log_output(func):
     return wrapper
 
 
+def print_log(message: str, error: bool = False):
+    """Print the message in log.
+    Args:
+        message (str): The message to print.
+    """
+    date_time = datetime.datetime.now()
+    date_time_format = date_time.strftime("%d/%m/%Y %H:%M:%S")
+    log_message = f"[{date_time_format}] {message}"
+    print(log_message)
+    if error:
+        logging.error(log_message)
+    else:
+        logging.info(log_message)
+
 def log_request(client_address, request: WSGIRequest, response: WSGIResponse):
     """Print the request in log.
     Args:
@@ -25,8 +40,5 @@ def log_request(client_address, request: WSGIRequest, response: WSGIResponse):
         request (WSGIRequest): The request object.
         response (WSGIResponse): The response object.
     """
-    date_time = datetime.datetime.now()
-    date_time_format = date_time.strftime("%d/%m/%Y %H:%M:%S")
-    print(
-        f"[{date_time_format}] {response.status} {request.http_method} {request.path} {client_address[0]} - {client_address[1]}"
-    )
+    log_message = f"{response.status} {request.http_method} {request.path} {client_address[0]} - {client_address[1]}"
+    print_log(log_message)
