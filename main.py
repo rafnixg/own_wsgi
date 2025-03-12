@@ -25,7 +25,10 @@ app = WSGIApplication(
 @app.get("/")
 def index(request: Request) -> PlainTextResponse:
     """Index page."""
-    return PlainTextResponse(status="200 OK", body="Hello, World!")
+    routes = [route.path for route in app.router.routes]
+    return PlainTextResponse(
+        status="200 OK", body="\n".join(routes) if routes else "No routes found."
+    )
 
 
 @app.get("/html")
