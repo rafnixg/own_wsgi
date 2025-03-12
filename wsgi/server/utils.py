@@ -1,7 +1,7 @@
 """Utility functions for the server."""
 
 import argparse
-
+from .log import print_log
 
 def get_directory_path():
     """Get the directory path from the command line arguments.
@@ -20,15 +20,15 @@ def get_directory_path():
 
 def print_welcome_message(app):
     """Print the welcome message."""
-    print("Welcome the Simple WSGI Server!")
-    print(f"Listening on {app.host}:{app.port}...\n")
-    print("Press Ctrl+C to quit.\n")
+    print_log("Welcome the Simple WSGI Server!")
+    print_log(f"Listening on {app.host}:{app.port}...\n")
+    print_log("Press Ctrl+C to quit.\n")
     if app:
         print_avaliabe_endpoints(app)
 
 
 def print_avaliabe_endpoints(app):
     """Print the available endpoints."""
-    print("Available endpoints:")
+    print_log("Available endpoints:")
     for route in app.router.routes:
-        print(f"[{route.http_method}] {route.path}")
+        print_log(f"[{route.http_method}] {route.path}")

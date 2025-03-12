@@ -7,7 +7,7 @@ import sys
 from .constant import BUFFER_ZISE
 from .wsgi import WSGIResponse, WSGIRequest
 from .http_request_parse import HttpRequestParser
-from .log import log_request
+from .log import log_request, print_log
 from .utils import print_welcome_message
 
 
@@ -23,7 +23,7 @@ class WSGIServer:
 
         if self.app is None:
             # TODO: run the server statically without an app
-            print("Please provide a WSGI application.")
+            print_log("Please provide a WSGI application.", error=True)
             sys.exit(1)
 
     def server_forever(self):
@@ -44,7 +44,7 @@ class WSGIServer:
             try:
                 # Accept the connection from TCP client
                 client_socket, client_address = server_socket.accept()
-                print(f"Socket established with {client_address}.")
+                print_log(f"Socket established with {client_address}.")
                 # Create a session for the client
                 session = Session(client_socket, client_address, self.app)
                 # Create a thread to handle the client connection
@@ -54,17 +54,17 @@ class WSGIServer:
                 # Start the thread
                 thread.start()
             except KeyboardInterrupt:
-                print("Server is shutting down.")
+                print_log("Server is shutting down.", error=True)
                 server_socket.close()
                 break
             except Exception as e:
-                print(f"An error occurred: {e}")
+                print_log(f"An error occurred: {e}", error=True)
                 server_socket.close()
                 break
         # Close the server socket
         server_socket.close()
         # Print the server shutdown message
-        print("Server has been shutdown.")
+        print_log("Server has been shutdown.", error=True)
         sys.exit(0)  # Exit the program
 
 
@@ -89,14 +89,14 @@ class Session:
             data = self.client_socket.recv(BUFFER_ZISE)
             self.parser.feed_data(data)
         self.client_socket.close()
-        print(f"Socket closed with {self.client_address}.")
+        print_log(f"Socket closed with {self.client_address}.")
 
     def on_url(self, url: bytes):
         """Handle the URL callback.
         Args:
             url (bytes): The URL.
         """
-        print(f"Received url: {url}")
+        print_log(f"Received url: {url}")
         self.request.http_method = self.parser.http_method.decode("utf-8")
         self.request.path = url.decode("utf-8")
 
@@ -106,7 +106,7 @@ class Session:
             name (bytes): The header name.
             value (bytes): The header value.
         """
-        # print(f"Received header: ({name}, {value})")
+        # print_log(f"Received header: ({name}, {value})")
         self.request.headers.append((name.decode("utf-8"), value.decode("utf-8")))
 
     def on_body(self, body: bytes):
@@ -114,16 +114,16 @@ class Session:
         Args:
             body (bytes): The body.
         """
-        # print(f"Received body: {body}")
+        # print_log(f"Received body: {body}")
         self.request.body.write(body)
         self.request.body.seek(0)
 
     def on_message_complete(self):
         """Handle the message complete callback"""
-        print("Received request completely.")
+        print_log("Received request completely.")
         environ = self.request.to_environ()
         body_chunks = self.app(environ, self.response.start_response)
-        # print("App callable has returned.")
+        # print_log("App callable has returned.")
         self.response.body = b"".join(body_chunks)
         self.client_socket.send(self.response.to_http())
         log_request(self.client_address, self.request, self.response)
