@@ -4,3 +4,4 @@ own_wsgi
 venv
 *.pyc
 *.pyo
+routes.py

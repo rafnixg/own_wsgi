@@ -104,3 +104,22 @@ server = WSGIServer(app=app, host='localhost', port=8000)
 server.serve_forever()
 
 ```
+
+### Docker
+
+Para crear una imagen de Docker para el servidor WSGI, sigue estos pasos:
+
+
+Construye la imagen de Docker:
+
+    ```bash
+    docker build -t my-wsgi-server .
+    ```
+
+Ejecuta el contenedor de Docker:
+
+    ```bash
+    docker run -p 8081:8081 my-wsgi-server
+    ```
+
+El servidor se iniciará y escuchará en el puerto 8000. Puedes probar el servidor abriendo un navegador web y navegando a `http://localhost:8081`, `http://localhost:8081/html`, o `http://localhost:8081/json`. Deberías ver diferentes tipos de contenido mostrados en el navegador.
