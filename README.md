@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rafnixg/own_wsgi)
+
 # Tutorial: Own WSGI Server.
 
 This is a simple tutorial on how to create your own WSGI server. This tutorial is for educational purposes only. It is not recommended to use this server in production.
